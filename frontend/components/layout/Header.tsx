@@ -66,35 +66,8 @@ export const Header: React.FC<HeaderProps> = ({
     <>
       <header className="bg-gray-100 border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* 左側: 戻るボタン */}
-            <div className="flex items-center">
-              <Button
-                variant="outline"
-                size="md"
-                onClick={handleBackClick}
-                icon={
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-                    />
-                  </svg>
-                }
-                iconPosition="left"
-              >
-                トップに戻る
-              </Button>
-            </div>
-
-            {/* 右側: 検索とテンプレート保存ボタン */}
+          <div className="flex items-center justify-end h-16">
+            {/* 右側: 検索、テンプレート保存、トップに戻るボタン */}
             <div className="flex items-center gap-3">
               <Button
                 variant="secondary"
@@ -143,6 +116,30 @@ export const Header: React.FC<HeaderProps> = ({
                 iconPosition="left"
               >
                 テンプレート保存
+              </Button>
+
+              <Button
+                variant="outline"
+                size="md"
+                onClick={handleBackClick}
+                icon={
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                    />
+                  </svg>
+                }
+                iconPosition="left"
+              >
+                トップに戻る
               </Button>
             </div>
           </div>

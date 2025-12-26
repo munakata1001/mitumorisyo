@@ -80,6 +80,7 @@ export const EstimateTabs: React.FC<EstimateTabsProps> = ({
       weight: 0,
       unitPrice: 0,
       price: 0,
+      autoDisplay: false,
       isAuto: false,
       isAutoInput: false,
       isTemplateDiff: false,
@@ -120,6 +121,8 @@ export const EstimateTabs: React.FC<EstimateTabsProps> = ({
             onAdd={handleAddRow}
             onRemove={handleRemoveRow}
             onUpdate={handleUpdateRow}
+            approvalInfo={approvalInfo}
+            onApprovalChange={onApprovalInfoChange}
           />
         )}
         
@@ -144,6 +147,8 @@ export const EstimateTabs: React.FC<EstimateTabsProps> = ({
             <RemarksForm
               remarksData={remarksData}
               onRemarksChange={onRemarksDataChange}
+              approvalInfo={approvalInfo}
+              onApprovalChange={onApprovalInfoChange}
             />
           </div>
         )}

@@ -232,112 +232,121 @@ export const CostCalculationForm: React.FC<CostCalculationFormProps> = ({
       </div>
 
       <div className="space-y-6">
-        {/* 自動計算項目 */}
-        <section className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-          <h3 className="font-bold text-gray-700 mb-4">自動計算項目</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
-              label="材料費"
-              name="materialCost"
-              type="number"
-              value={materialCost}
-              onChange={() => {}} // 読み取り専用
-              disabled
-              suffix="円"
-              formatNumber
-              helperText="テーブルデータの価格合計"
-            />
-            <Input
-              label="加工費"
-              name="processingCost"
-              type="number"
-              value={processingCost}
-              onChange={() => {}} // 読み取り専用
-              disabled
-              suffix="円"
-              formatNumber
-              helperText="重量と部品種類から計算"
-            />
-            <Input
-              label="塗装費"
-              name="paintingCost"
-              type="number"
-              value={paintingCost}
-              onChange={() => {}} // 読み取り専用
-              disabled
-              suffix="円"
-              formatNumber
-              helperText="塗装面積から計算"
-            />
-            <Input
-              label="塗装面積"
-              name="paintingArea"
-              type="number"
-              value={paintingArea}
-              onChange={() => {}} // 読み取り専用
-              disabled
-              suffix="m²"
-              formatNumber
-              helperText="テーブルデータから自動計算"
-            />
-          </div>
-        </section>
-
-        {/* 区切り線 */}
-        <div className="border-t border-gray-300"></div>
-
-        {/* 手動入力項目 */}
-        <section className="border border-gray-200 rounded-lg p-4">
-          <h3 className="font-bold text-gray-700 mb-4">手動入力項目</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
-              label="外注検査費"
-              name="externalInspectionCost"
-              type="number"
-              value={costCalculation.externalInspectionCost ?? 0}
-              onChange={(value) => handleManualInputChange('externalInspectionCost', Number(value))}
-              required
-              suffix="円"
-              formatNumber
-              min={0}
-              error={validateManualInput(costCalculation.externalInspectionCost ?? 0, '外注検査費')}
-            />
-            <Input
-              label="輸送費"
-              name="transportationCost"
-              type="number"
-              value={costCalculation.transportationCost ?? 0}
-              onChange={(value) => handleManualInputChange('transportationCost', Number(value))}
-              required
-              suffix="円"
-              formatNumber
-              min={0}
-              error={validateManualInput(costCalculation.transportationCost ?? 0, '輸送費')}
-            />
-            <Input
-              label="工場検査費"
-              name="factoryInspectionCost"
-              type="number"
-              value={costCalculation.factoryInspectionCost ?? 0}
-              onChange={(value) => handleManualInputChange('factoryInspectionCost', Number(value))}
-              required
-              suffix="円"
-              formatNumber
-              min={0}
-              error={validateManualInput(costCalculation.factoryInspectionCost ?? 0, '工場検査費')}
-            />
-            <Input
-              label="設計費"
-              name="designCost"
-              type="number"
-              value={costCalculation.designCost ?? 0}
-              onChange={(value) => handleManualInputChange('designCost', Number(value))}
-              required
-              suffix="円"
-              formatNumber
-              min={0}
-              error={validateManualInput(costCalculation.designCost ?? 0, '設計費')}
-            />
+        {/* 見積原価計算 */}
+        <section className="bg-white p-4 rounded-lg border border-gray-200">
+          <h3 className="font-bold text-gray-700 mb-4">見積原価計算</h3>
+          <div className="flex flex-row gap-4 flex-wrap">
+            {/* 自動計算項目 */}
+            <div className="flex-shrink-0" style={{ width: '180px' }}>
+              <Input
+                label="材料費"
+                name="materialCost"
+                type="number"
+                value={materialCost}
+                onChange={() => {}} // 読み取り専用
+                disabled
+                suffix="円"
+                formatNumber
+                helperText="テーブルデータの価格合計"
+              />
+            </div>
+            <div className="flex-shrink-0" style={{ width: '180px' }}>
+              <Input
+                label="加工費"
+                name="processingCost"
+                type="number"
+                value={processingCost}
+                onChange={() => {}} // 読み取り専用
+                disabled
+                suffix="円"
+                formatNumber
+                helperText="重量と部品種類から計算"
+              />
+            </div>
+            <div className="flex-shrink-0" style={{ width: '180px' }}>
+              <Input
+                label="塗装費"
+                name="paintingCost"
+                type="number"
+                value={paintingCost}
+                onChange={() => {}} // 読み取り専用
+                disabled
+                suffix="円"
+                formatNumber
+                helperText="塗装面積から計算"
+              />
+            </div>
+            <div className="flex-shrink-0" style={{ width: '180px' }}>
+              <Input
+                label="塗装面積"
+                name="paintingArea"
+                type="number"
+                value={paintingArea}
+                onChange={() => {}} // 読み取り専用
+                disabled
+                suffix="m²"
+                formatNumber
+                helperText="テーブルデータから自動計算"
+              />
+            </div>
+            {/* 手動入力項目 */}
+            <div className="flex-shrink-0" style={{ width: '180px' }}>
+              <Input
+                label="外注検査費"
+                name="externalInspectionCost"
+                type="number"
+                value={costCalculation.externalInspectionCost ?? 0}
+                onChange={(value) => handleManualInputChange('externalInspectionCost', Number(value))}
+                required
+                suffix="円"
+                formatNumber
+                min={0}
+                error={validateManualInput(costCalculation.externalInspectionCost ?? 0, '外注検査費')}
+              />
+            </div>
+            <div className="basis-full"></div> {/* Force a line break here */}
+            <div className="flex-shrink-0" style={{ width: '180px' }}>
+              <Input
+                label="輸送費"
+                name="transportationCost"
+                type="number"
+                value={costCalculation.transportationCost ?? 0}
+                onChange={(value) => handleManualInputChange('transportationCost', Number(value))}
+                required
+                suffix="円"
+                formatNumber
+                min={0}
+                error={validateManualInput(costCalculation.transportationCost ?? 0, '輸送費')}
+              />
+            </div>
+            <div className="flex-shrink-0" style={{ width: '180px' }}>
+              <Input
+                label="工場検査費"
+                name="factoryInspectionCost"
+                type="number"
+                value={costCalculation.factoryInspectionCost ?? 0}
+                onChange={(value) => handleManualInputChange('factoryInspectionCost', Number(value))}
+                required
+                suffix="円"
+                formatNumber
+                min={0}
+                error={validateManualInput(costCalculation.factoryInspectionCost ?? 0, '工場検査費')}
+              />
+            </div>
+            <div className="flex-shrink-0" style={{ width: '180px' }}>
+              <Input
+                label="設計費"
+                name="designCost"
+                type="number"
+                value={costCalculation.designCost ?? 0}
+                onChange={(value) => handleManualInputChange('designCost', Number(value))}
+                required
+                suffix="円"
+                formatNumber
+                min={0}
+                error={validateManualInput(costCalculation.designCost ?? 0, '設計費')}
+              />
+            </div>
           </div>
         </section>
 
@@ -345,26 +354,26 @@ export const CostCalculationForm: React.FC<CostCalculationFormProps> = ({
         <div className="border-t border-gray-300"></div>
 
         {/* 原価サマリー */}
-        <section className="bg-blue-50 p-6 rounded-lg border-2 border-blue-200 shadow-sm">
+        <section className="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 shadow-sm">
           <h3 className="font-bold text-gray-800 mb-4 text-lg">原価サマリー</h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between py-2 border-b border-blue-200">
-              <span className="text-gray-700 font-medium text-base">直接原価:</span>
-              <span className="text-lg font-bold text-gray-900">
+          <div className="flex flex-row gap-4 flex-wrap items-center">
+            <div className="flex-shrink-0" style={{ width: '200px' }}>
+              <div className="text-sm text-gray-600 font-medium mb-1">直接原価</div>
+              <div className="text-xl font-bold text-gray-900">
                 {costSummary.directCost.toLocaleString('ja-JP')}円
-              </span>
+              </div>
             </div>
-            <div className="flex items-center justify-between py-2 border-b border-blue-200">
-              <span className="text-gray-700 font-medium text-base">製造原価:</span>
-              <span className="text-lg font-bold text-gray-900">
+            <div className="flex-shrink-0" style={{ width: '200px' }}>
+              <div className="text-sm text-gray-600 font-medium mb-1">製造原価</div>
+              <div className="text-xl font-bold text-gray-900">
                 {costSummary.manufacturingCost.toLocaleString('ja-JP')}円
-              </span>
+              </div>
             </div>
-            <div className="flex items-center justify-between py-4 bg-white rounded-lg px-4 mt-4 shadow-sm border-2 border-blue-300">
-              <span className="text-xl font-bold text-blue-600">総原価:</span>
-              <span className="text-3xl font-bold text-blue-600">
+            <div className="flex-shrink-0 bg-white rounded-lg px-4 py-3 shadow-sm border-2 border-blue-300" style={{ width: '200px' }}>
+              <div className="text-sm text-gray-600 font-medium mb-1">総原価</div>
+              <div className="text-2xl font-bold text-blue-600">
                 {costSummary.totalCost.toLocaleString('ja-JP')}円
-              </span>
+              </div>
             </div>
           </div>
           <div className="mt-4 text-xs text-gray-600 bg-white p-2 rounded">
@@ -373,249 +382,190 @@ export const CostCalculationForm: React.FC<CostCalculationFormProps> = ({
           </div>
         </section>
 
+        {/* アクションボタン - 小さく左に配置 */}
+        <div className="flex flex-row gap-2 justify-start py-2">
+          <Button
+            onClick={handleRecalculate}
+            variant="primary"
+            size="sm"
+            disabled={isRecalculating}
+            className="!bg-blue-600 !text-white hover:!bg-blue-700 focus:!ring-blue-600 disabled:!bg-gray-400"
+            icon={
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                />
+              </svg>
+            }
+          >
+            {isRecalculating ? '計算中...' : '計算'}
+          </Button>
+
+          <Button
+            onClick={handleSave}
+            variant="primary"
+            size="sm"
+            disabled={!isDirty || isSaving}
+            className="!bg-blue-600 !text-white hover:!bg-blue-700 focus:!ring-blue-600 disabled:!bg-gray-400"
+            icon={
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+                />
+              </svg>
+            }
+          >
+            {isSaving ? '保存中...' : '保存'}
+          </Button>
+
+          <Button
+            onClick={handleExportPdf}
+            variant="outline"
+            size="sm"
+            disabled={!hasData || isExportingPdf}
+            className="!border-green-500 !text-green-500 hover:!bg-green-50 focus:!ring-green-500 disabled:!border-gray-400 disabled:!text-gray-400"
+            icon={
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                />
+              </svg>
+            }
+          >
+            {isExportingPdf ? '出力中...' : 'PDF出力'}
+          </Button>
+
+          <Button
+            onClick={handleExportExcel}
+            variant="secondary"
+            size="sm"
+            disabled={!hasData || isExportingExcel}
+            icon={
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+            }
+          >
+            {isExportingExcel ? '出力中...' : 'Excel出力'}
+          </Button>
+        </div>
+
         {/* 区切り線 */}
         <div className="border-t border-gray-300"></div>
 
-        {/* 見積査印情報 */}
-        <section className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-          <h3 className="font-bold text-gray-700 mb-4">見積査印情報</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
-              label="査定者"
-              name="assessor"
-              type="text"
-              value={approvalInfo.assessor}
-              onChange={(value) => onApprovalChange({ ...approvalInfo, assessor: String(value) })}
-              required
-              error={errors.approval?.assessor}
-              placeholder="査定者名を入力"
-            />
-            <DatePicker
-              label="査定日"
-              name="assessmentDate"
-              value={approvalInfo.assessmentDate}
-              onChange={(date) => onApprovalChange({ ...approvalInfo, assessmentDate: date || new Date() })}
-              required
-              error={errors.approval?.assessmentDate}
-            />
-            <Input
-              label="承認者"
-              name="approver"
-              type="text"
-              value={approvalInfo.approver}
-              onChange={(value) => onApprovalChange({ ...approvalInfo, approver: String(value) })}
-              required
-              error={errors.approval?.approver}
-              placeholder="承認者名を入力"
-            />
-            <DatePicker
-              label="承認日"
-              name="approvalDate"
-              value={approvalInfo.approvalDate}
-              onChange={(date) => onApprovalChange({ ...approvalInfo, approvalDate: date || new Date() })}
-              required
-              minDate={approvalInfo.assessmentDate}
-              error={errors.approval?.approvalDate}
-            />
-          </div>
-        </section>
-
-        {/* 区切り線 */}
-        <div className="border-t border-gray-300"></div>
-
-        {/* 下部査印欄 */}
+        {/* 査印欄 */}
         <section className="border border-gray-200 rounded-lg p-4 bg-white">
           <h3 className="font-bold text-gray-700 mb-4">査印欄</h3>
-          <div className="space-y-4">
-            {/* 最終承認者 */}
-            <div>
-              <Input
-                label="最終承認者"
-                name="finalApprover"
-                type="text"
-                value={approvalInfo.finalApprover}
-                onChange={(value) => onApprovalChange({ ...approvalInfo, finalApprover: String(value) })}
-                placeholder="最終承認者名を入力"
-              />
-            </div>
-
-            {/* 査印1〜4（2×2グリッド、印鑑風デザイン） */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">査印</label>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="relative">
-                  <div className="border-2 border-gray-300 rounded-lg p-3 bg-gradient-to-br from-red-50 to-red-100 hover:border-red-400 transition-colors">
-                    <label className="block text-xs font-medium text-gray-600 mb-1">査印1</label>
-                    <input
-                      type="text"
-                      value={approvalInfo.seal1}
-                      onChange={(e) => onApprovalChange({ ...approvalInfo, seal1: e.target.value })}
-                      placeholder="査印1"
-                      className="w-full px-2 py-1 border border-gray-300 rounded bg-white text-center font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400"
-                    />
-                  </div>
-                </div>
-                <div className="relative">
-                  <div className="border-2 border-gray-300 rounded-lg p-3 bg-gradient-to-br from-red-50 to-red-100 hover:border-red-400 transition-colors">
-                    <label className="block text-xs font-medium text-gray-600 mb-1">査印2</label>
-                    <input
-                      type="text"
-                      value={approvalInfo.seal2}
-                      onChange={(e) => onApprovalChange({ ...approvalInfo, seal2: e.target.value })}
-                      placeholder="査印2"
-                      className="w-full px-2 py-1 border border-gray-300 rounded bg-white text-center font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400"
-                    />
-                  </div>
-                </div>
-                <div className="relative">
-                  <div className="border-2 border-gray-300 rounded-lg p-3 bg-gradient-to-br from-red-50 to-red-100 hover:border-red-400 transition-colors">
-                    <label className="block text-xs font-medium text-gray-600 mb-1">査印3</label>
-                    <input
-                      type="text"
-                      value={approvalInfo.seal3}
-                      onChange={(e) => onApprovalChange({ ...approvalInfo, seal3: e.target.value })}
-                      placeholder="査印3"
-                      className="w-full px-2 py-1 border border-gray-300 rounded bg-white text-center font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400"
-                    />
-                  </div>
-                </div>
-                <div className="relative">
-                  <div className="border-2 border-gray-300 rounded-lg p-3 bg-gradient-to-br from-red-50 to-red-100 hover:border-red-400 transition-colors">
-                    <label className="block text-xs font-medium text-gray-600 mb-1">査印4</label>
-                    <input
-                      type="text"
-                      value={approvalInfo.seal4}
-                      onChange={(e) => onApprovalChange({ ...approvalInfo, seal4: e.target.value })}
-                      placeholder="査印4"
-                      className="w-full px-2 py-1 border border-gray-300 rounded bg-white text-center font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400"
-                    />
-                  </div>
-                </div>
+          <div className="flex flex-row gap-4 items-end">
+            <div className="flex-shrink-0">
+              <label className="block text-xs font-medium text-gray-600 mb-1">最終承認者</label>
+              <div className="w-24 h-24 border-2 border-gray-400 bg-white flex items-center justify-center">
+                <input
+                  type="text"
+                  value={approvalInfo.finalApprover || ''}
+                  onChange={(e) => onApprovalChange({ ...approvalInfo, finalApprover: e.target.value })}
+                  placeholder=""
+                  className="w-full h-full text-center font-medium text-gray-800 focus:outline-none bg-transparent border-none"
+                />
               </div>
             </div>
-
-            {/* 担当者 */}
-            <div>
-              <Input
-                label="担当者"
-                name="personInCharge"
-                type="text"
-                value={approvalInfo.personInCharge}
-                onChange={(value) => onApprovalChange({ ...approvalInfo, personInCharge: String(value) })}
-                placeholder="担当者名を入力"
-              />
+            <div className="flex-shrink-0">
+              <label className="block text-xs font-medium text-gray-600 mb-1">査印4</label>
+              <div className="w-24 h-24 border-2 border-gray-400 bg-white flex items-center justify-center">
+                <input
+                  type="text"
+                  value={approvalInfo.seal4 || ''}
+                  onChange={(e) => onApprovalChange({ ...approvalInfo, seal4: e.target.value })}
+                  placeholder=""
+                  className="w-full h-full text-center font-medium text-gray-800 focus:outline-none bg-transparent border-none"
+                />
+              </div>
+            </div>
+            <div className="flex-shrink-0">
+              <label className="block text-xs font-medium text-gray-600 mb-1">査印3</label>
+              <div className="w-24 h-24 border-2 border-gray-400 bg-white flex items-center justify-center">
+                <input
+                  type="text"
+                  value={approvalInfo.seal3 || ''}
+                  onChange={(e) => onApprovalChange({ ...approvalInfo, seal3: e.target.value })}
+                  placeholder=""
+                  className="w-full h-full text-center font-medium text-gray-800 focus:outline-none bg-transparent border-none"
+                />
+              </div>
+            </div>
+            <div className="flex-shrink-0">
+              <label className="block text-xs font-medium text-gray-600 mb-1">査印2</label>
+              <div className="w-24 h-24 border-2 border-gray-400 bg-white flex items-center justify-center">
+                <input
+                  type="text"
+                  value={approvalInfo.seal2 || ''}
+                  onChange={(e) => onApprovalChange({ ...approvalInfo, seal2: e.target.value })}
+                  placeholder=""
+                  className="w-full h-full text-center font-medium text-gray-800 focus:outline-none bg-transparent border-none"
+                />
+              </div>
+            </div>
+            <div className="flex-shrink-0">
+              <label className="block text-xs font-medium text-gray-600 mb-1">査印1</label>
+              <div className="w-24 h-24 border-2 border-gray-400 bg-white flex items-center justify-center">
+                <input
+                  type="text"
+                  value={approvalInfo.seal1 || ''}
+                  onChange={(e) => onApprovalChange({ ...approvalInfo, seal1: e.target.value })}
+                  placeholder=""
+                  className="w-full h-full text-center font-medium text-gray-800 focus:outline-none bg-transparent border-none"
+                />
+              </div>
+            </div>
+            <div className="flex-shrink-0">
+              <label className="block text-xs font-medium text-gray-600 mb-1">担当者</label>
+              <div className="w-24 h-24 border-2 border-gray-400 bg-white flex items-center justify-center">
+                <input
+                  type="text"
+                  value={approvalInfo.personInCharge || ''}
+                  onChange={(e) => onApprovalChange({ ...approvalInfo, personInCharge: e.target.value })}
+                  placeholder=""
+                  className="w-full h-full text-center font-medium text-gray-800 focus:outline-none bg-transparent border-none"
+                />
+              </div>
             </div>
           </div>
         </section>
 
-        {/* 区切り線 */}
-        <div className="border-t border-gray-300"></div>
-
-        {/* アクションボタンエリア */}
-        <section className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-          <h3 className="font-bold text-gray-700 mb-4">アクション</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-            {/* 計算ボタン */}
-            <Button
-              onClick={handleRecalculate}
-              variant="outline"
-              disabled={isRecalculating}
-              icon={
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                  />
-                </svg>
-              }
-              fullWidth
-            >
-              {isRecalculating ? '計算中...' : '計算'}
-            </Button>
-
-            {/* 保存ボタン */}
-            <Button
-              onClick={handleSave}
-              variant="primary"
-              disabled={!isDirty || isSaving}
-              icon={
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
-                  />
-                </svg>
-              }
-              fullWidth
-            >
-              {isSaving ? '保存中...' : '保存'}
-            </Button>
-
-            {/* PDF出力ボタン */}
-            <Button
-              onClick={handleExportPdf}
-              variant="secondary"
-              disabled={!hasData || isExportingPdf}
-              icon={
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                  />
-                </svg>
-              }
-              fullWidth
-            >
-              {isExportingPdf ? '出力中...' : 'PDF出力'}
-            </Button>
-
-            {/* Excel出力ボタン */}
-            <Button
-              onClick={handleExportExcel}
-              variant="secondary"
-              disabled={!hasData || isExportingExcel}
-              icon={
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-              }
-              fullWidth
-            >
-              {isExportingExcel ? '出力中...' : 'Excel出力'}
-            </Button>
-          </div>
-        </section>
       </div>
     </div>
   );

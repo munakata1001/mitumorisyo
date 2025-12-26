@@ -7,7 +7,8 @@ import { ProjectInfoForm } from '@/components/estimate/ProjectInfoForm';
 import { FileUpload, type ParseMode } from '@/components/estimate/FileUpload';
 import { TemplateSelector } from '@/components/estimate/TemplateSelector';
 import { EstimateTabs } from '@/components/estimate/EstimateTabs';
-import { saveTemplate, getEstimate, saveEstimate, type Template } from '@/lib/storage/localStorage';
+import { saveTemplate, getEstimate, saveEstimate, hasInitialTemplate, type Template } from '@/lib/storage/localStorage';
+import { initialTemplateData, getInitialTemplateTableRows } from '@/lib/templates/initialTemplate';
 import type { ProjectInfo, CostCalculation, EstimateTableRow, RemarksData, ApprovalInfo } from '@/types/estimate';
 
 export default function Home() {
@@ -34,6 +35,20 @@ export default function Home() {
       ...prev,
       deliveryDate: new Date(),
     }));
+
+    // 初期テンプレートが存在しない場合は作成
+    if (!hasInitialTemplate()) {
+      const initialTableRows = getInitialTemplateTableRows();
+      const initialTemplate: Template = {
+        id: initialTemplateData.id,
+        name: initialTemplateData.name,
+        description: initialTemplateData.description,
+        tableData: initialTableRows,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      saveTemplate(initialTemplate);
+    }
   }, []);
 
   const [errors, setErrors] = useState<Partial<Record<keyof ProjectInfo, string>>>({});

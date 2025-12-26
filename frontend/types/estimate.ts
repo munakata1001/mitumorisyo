@@ -34,6 +34,7 @@ export interface EstimateTableRow {
   weight: number;                // 重量（自動計算、kg）
   unitPrice: number;             // 単価（円）
   price: number;                 // 価格（自動計算、円）
+  autoDisplay: boolean;          // 自動表示フラグ
   isAuto: boolean;               // 自動計算フラグ
   isAutoInput: boolean;          // 自動入力行フラグ
   isTemplateDiff: boolean;       // テンプレート差分フラグ

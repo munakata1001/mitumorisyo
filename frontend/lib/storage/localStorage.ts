@@ -109,10 +109,10 @@ export function getTemplates(): Template[] {
     ...t,
     createdAt: new Date(t.createdAt),
     updatedAt: new Date(t.updatedAt),
-    projectInfo: {
+    projectInfo: t.projectInfo ? {
       ...t.projectInfo,
-      deliveryDate: new Date(t.projectInfo.deliveryDate),
-    },
+      deliveryDate: t.projectInfo.deliveryDate ? new Date(t.projectInfo.deliveryDate) : undefined,
+    } : undefined,
   }));
 }
 
@@ -127,5 +127,11 @@ export function deleteTemplate(id: string): void {
   const templates = getTemplates();
   const filtered = templates.filter((t) => t.id !== id);
   localStorage.setItem(STORAGE_KEYS.TEMPLATES, JSON.stringify(filtered));
+}
+
+// 初期テンプレートが存在するかチェック
+export function hasInitialTemplate(): boolean {
+  const templates = getTemplates();
+  return templates.some((t) => t.id === 'degasser_1800');
 }
 

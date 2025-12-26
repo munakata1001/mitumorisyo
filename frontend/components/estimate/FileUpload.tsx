@@ -3,10 +3,8 @@
 import React, { useState, useRef } from 'react';
 import { Button } from '@/components/common/Button';
 
-export type ParseMode = '個別解析' | '2ファイル統合' | '3ファイル統合' | '2ファイル+価格参考';
-
 interface FileUploadProps {
-  onUpload: (files: File[], mode: ParseMode) => Promise<void>;
+  onUpload?: (files: File[]) => Promise<void>;
   maxSize?: number; // デフォルト: 10MB
   acceptedTypes?: string[]; // デフォルト: ['.xlsx', '.xlsm', '.xls', '.pdf']
   maxFiles?: number; // デフォルト: 3
@@ -17,6 +15,8 @@ interface FileWithStatus extends File {
   errorMessage?: string;
 }
 
+export type ParseMode = '個別解析' | '2ファイル統合' | '3ファイル統合' | '2ファイル+価格参考';
+
 export const FileUpload: React.FC<FileUploadProps> = ({
   onUpload,
   maxSize = 10 * 1024 * 1024, // 10MB
@@ -24,9 +24,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   maxFiles = 3,
 }) => {
   const [files, setFiles] = useState<FileWithStatus[]>([]);
-  const [mode, setMode] = useState<ParseMode>('個別解析');
-  const [isDragging, setIsDragging] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [parseMode, setParseMode] = useState<ParseMode>('個別解析');
   const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -82,31 +80,20 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   const handleFiles = (newFiles: File[]) => {
     const validFiles = validateFiles(newFiles);
     if (validFiles.length > 0) {
-      setFiles((prev) => [...prev, ...validFiles]);
+      const updatedFiles = [...files, ...validFiles];
+      setFiles(updatedFiles);
       setMessage(null);
+      
+      // ファイル選択後にコールバックを呼び出し
+      if (onUpload) {
+        onUpload(updatedFiles).catch((error) => {
+          setMessage({ 
+            type: 'error', 
+            text: error instanceof Error ? error.message : 'ファイルの処理に失敗しました' 
+          });
+        });
+      }
     }
-  };
-
-  // ドラッグ&ドロップ処理
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-
-    const droppedFiles = Array.from(e.dataTransfer.files);
-    handleFiles(droppedFiles);
   };
 
   // ファイル選択ダイアログを開く
@@ -127,62 +114,34 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
   // ファイル削除
   const handleRemoveFile = (index: number) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
+    const updatedFiles = files.filter((_, i) => i !== index);
+    setFiles(updatedFiles);
     setMessage(null);
+    
+    // ファイル削除後にコールバックを呼び出し
+    if (onUpload) {
+      onUpload(updatedFiles).catch((error) => {
+        setMessage({ 
+          type: 'error', 
+          text: error instanceof Error ? error.message : 'ファイルの処理に失敗しました' 
+        });
+      });
+    }
   };
 
   // 全ファイル削除
   const handleClearAll = () => {
     setFiles([]);
     setMessage(null);
-  };
-
-  // 解析処理
-  const handleParse = async () => {
-    if (files.length === 0) {
-      setMessage({ type: 'error', text: 'ファイルを選択してください' });
-      return;
-    }
-
-    // モード別のファイル数チェック
-    if (mode === '2ファイル統合' && files.length !== 2) {
-      setMessage({ type: 'error', text: '2ファイル統合モードでは2つのファイルが必要です' });
-      return;
-    }
-
-    if (mode === '3ファイル統合' && files.length !== 3) {
-      setMessage({ type: 'error', text: '3ファイル統合モードでは3つのファイルが必要です' });
-      return;
-    }
-
-    if (mode === '2ファイル+価格参考' && files.length !== 2) {
-      setMessage({ type: 'error', text: '2ファイル+価格参考モードでは2つのファイルが必要です' });
-      return;
-    }
-
-    setIsProcessing(true);
-    setMessage(null);
-
-    // ファイルのステータスを更新
-    setFiles((prev) => prev.map((f) => ({ ...f, status: 'processing' })));
-
-    try {
-      await onUpload(files, mode);
-      setMessage({ type: 'success', text: 'ファイルの解析が完了しました' });
-      
-      // 成功後、ファイルをクリア
-      setTimeout(() => {
-        setFiles([]);
-        setMessage(null);
-      }, 2000);
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'ファイルの解析に失敗しました';
-      setMessage({ type: 'error', text: errorMessage });
-      
-      // エラー時、ファイルのステータスを更新
-      setFiles((prev) => prev.map((f) => ({ ...f, status: 'error', errorMessage })));
-    } finally {
-      setIsProcessing(false);
+    
+    // ファイル削除後にコールバックを呼び出し
+    if (onUpload) {
+      onUpload([]).catch((error) => {
+        setMessage({ 
+          type: 'error', 
+          text: error instanceof Error ? error.message : 'ファイルの処理に失敗しました' 
+        });
+      });
     }
   };
 
@@ -214,18 +173,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       <h2 className="text-xl font-bold mb-6 text-gray-800">ファイルアップロード</h2>
 
       <div className="space-y-4">
-        {/* ドラッグ&ドロップエリア */}
-        <div
-          className={`
-            border-2 border-dashed rounded-lg p-8 text-center transition-colors
-            ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'}
-            ${isProcessing ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-          `}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          onClick={!isProcessing ? handleFileSelect : undefined}
-        >
+        {/* ファイル選択ボタン */}
+        <div className="flex items-center gap-4">
           <input
             ref={fileInputRef}
             type="file"
@@ -233,61 +182,19 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             accept={acceptedTypes.join(',')}
             onChange={handleFileInputChange}
             className="hidden"
-            disabled={isProcessing}
           />
           
-          <div className="space-y-2">
-            <svg
-              className="mx-auto h-12 w-12 text-gray-400"
-              stroke="currentColor"
-              fill="none"
-              viewBox="0 0 48 48"
-            >
-              <path
-                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <p className="text-gray-600 font-medium">ファイルをドラッグ&ドロップ</p>
-            <p className="text-sm text-gray-500">または</p>
-            <Button variant="outline" size="md" disabled={isProcessing}>
-              ファイルを選択
-            </Button>
-            <p className="text-xs text-gray-400 mt-2">
-              対応形式: {acceptedTypes.join(', ')} | 最大{formatFileSize(maxSize)} | 最大{maxFiles}個
-            </p>
-          </div>
-        </div>
-
-        {/* 解析モード選択 */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            解析モード
-          </label>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {(['個別解析', '2ファイル統合', '3ファイル統合', '2ファイル+価格参考'] as ParseMode[]).map((m) => (
-              <label
-                key={m}
-                className={`
-                  flex items-center p-3 border rounded-lg cursor-pointer transition-colors
-                  ${mode === m ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:bg-gray-50'}
-                  ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}
-                `}
-              >
-                <input
-                  type="radio"
-                  value={m}
-                  checked={mode === m}
-                  onChange={(e) => setMode(e.target.value as ParseMode)}
-                  disabled={isProcessing}
-                  className="mr-2 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm text-gray-700">{m}</span>
-              </label>
-            ))}
-          </div>
+          <Button
+            variant="outline"
+            size="md"
+            onClick={handleFileSelect}
+          >
+            ファイルを選択
+          </Button>
+          
+          <p className="text-sm text-gray-500">
+            対応形式: {acceptedTypes.join(', ')} | 最大{formatFileSize(maxSize)} | 最大{maxFiles}個
+          </p>
         </div>
 
         {/* ファイル一覧 */}
@@ -299,8 +206,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
               </p>
               <button
                 onClick={handleClearAll}
-                disabled={isProcessing}
-                className="text-sm text-red-600 hover:text-red-700 disabled:opacity-50"
+                className="text-sm text-red-600 hover:text-red-700"
               >
                 すべて削除
               </button>
@@ -309,13 +215,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
               {files.map((file, index) => (
                 <div
                   key={`${file.name}-${file.size}-${index}`}
-                  className={`
-                    flex items-center justify-between p-3 border rounded-lg
-                    ${file.status === 'processing' ? 'bg-blue-50 border-blue-200' : ''}
-                    ${file.status === 'error' ? 'bg-red-50 border-red-200' : ''}
-                    ${file.status === 'completed' ? 'bg-green-50 border-green-200' : ''}
-                    ${!file.status || file.status === 'pending' ? 'bg-gray-50 border-gray-200' : ''}
-                  `}
+                  className="flex items-center justify-between p-3 border rounded-lg bg-gray-50 border-gray-200"
                 >
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     {getFileIcon(file.name)}
@@ -325,22 +225,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                       </p>
                       <div className="flex items-center gap-2 mt-1">
                         <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
-                        {file.status === 'processing' && (
-                          <span className="text-xs text-blue-600">処理中...</span>
-                        )}
-                        {file.status === 'error' && (
-                          <span className="text-xs text-red-600">エラー</span>
-                        )}
-                        {file.status === 'completed' && (
-                          <span className="text-xs text-green-600">完了</span>
-                        )}
                       </div>
                     </div>
                   </div>
                   <button
                     onClick={() => handleRemoveFile(index)}
-                    disabled={isProcessing}
-                    className="ml-2 text-red-500 hover:text-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="ml-2 text-red-500 hover:text-red-700"
                     title="削除"
                   >
                     <svg
@@ -363,54 +253,23 @@ export const FileUpload: React.FC<FileUploadProps> = ({
           </div>
         )}
 
-        {/* 解析ボタン */}
-        <div className="flex items-center gap-3">
-          <Button
-            variant="primary"
-            size="md"
-            onClick={handleParse}
-            disabled={files.length === 0 || isProcessing}
-            icon={
-              isProcessing ? (
-                <svg
-                  className="animate-spin"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                  />
-                </svg>
-              )
-            }
-            iconPosition="left"
-            fullWidth
-          >
-            {isProcessing ? '解析中...' : '解析開始'}
-          </Button>
+        {/* 解析モード選択 */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            解析モード
+          </label>
+          <div className="flex flex-wrap gap-3">
+            {(['個別解析', '2ファイル統合', '3ファイル統合', '2ファイル+価格参考'] as ParseMode[]).map((mode) => (
+              <Button
+                key={mode}
+                variant={parseMode === mode ? 'primary' : 'outline'}
+                size="md"
+                onClick={() => setParseMode(mode)}
+              >
+                {mode}
+              </Button>
+            ))}
+          </div>
         </div>
 
         {/* メッセージ表示 */}

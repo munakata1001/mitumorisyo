@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { Select } from '@/components/common/Select';
 import { Button } from '@/components/common/Button';
-import { Input } from '@/components/common/Input';
 import { getTemplates, type Template } from '@/lib/storage/localStorage';
 import { format } from 'date-fns';
 import type { ProjectInfo, EstimateTableRow, CostCalculation, RemarksData, ApprovalInfo } from '@/types/estimate';
@@ -18,10 +17,9 @@ interface TemplateSelectorProps {
   }) => void;
 }
 
-export const TemplateSelector: React.FC<TemplateSelectorProps> = ({ onApply, onTemplateSaved }) => {
+export const TemplateSelector: React.FC<TemplateSelectorProps> = ({ onApply }) => {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>('');
-  const [searchQuery, setSearchQuery] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
 
@@ -50,16 +48,6 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({ onApply, onT
     const loadedTemplates = getTemplates();
     setTemplates(loadedTemplates);
   };
-
-  // 検索フィルタリング
-  const filteredTemplates = templates.filter((template) => {
-    if (!searchQuery.trim()) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      template.name.toLowerCase().includes(query) ||
-      (template.description && template.description.toLowerCase().includes(query))
-    );
-  });
 
   // テンプレート適用
   const handleApply = () => {
@@ -107,37 +95,72 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({ onApply, onT
       <h2 className="text-xl font-bold mb-6 text-gray-800">テンプレート選択</h2>
 
       <div className="space-y-4">
-        {/* 検索ボックス（オプション） */}
-        {templates.length > 0 && (
-          <div>
-            <Input
-              label="テンプレート検索"
-              name="templateSearch"
-              type="text"
-              value={searchQuery}
-              onChange={(value) => setSearchQuery(String(value))}
-              placeholder="テンプレート名または説明で検索"
+        {/* テンプレート選択と適用ボタン */}
+        <div className="flex items-end gap-4">
+          <div className="flex-1">
+            <Select
+              label="テンプレート"
+              name="template"
+              value={selectedTemplateId}
+              onChange={setSelectedTemplateId}
+              options={
+                templates.length > 0
+                  ? templates.map((template) => ({
+                      value: template.id,
+                      label: `${template.name}${template.description ? ` - ${template.description}` : ''}`,
+                    }))
+                  : [{ value: '', label: 'テンプレートがありません' }]
+              }
+              placeholder="テンプレートを選択してください"
             />
           </div>
-        )}
-
-        {/* テンプレート選択 */}
-        <div>
-          <Select
-            label="テンプレート"
-            name="template"
-            value={selectedTemplateId}
-            onChange={setSelectedTemplateId}
-            options={
-              filteredTemplates.length > 0
-                ? filteredTemplates.map((template) => ({
-                    value: template.id,
-                    label: `${template.name}${template.description ? ` - ${template.description}` : ''}`,
-                  }))
-                : [{ value: '', label: 'テンプレートがありません' }]
-            }
-            placeholder="テンプレートを選択してください"
-          />
+          <div className="pb-1">
+            <Button
+              variant="primary"
+              size="md"
+              onClick={handleApply}
+              disabled={!selectedTemplateId || isLoading}
+              icon={
+                isLoading ? (
+                  <svg
+                    className="animate-spin"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                    />
+                  </svg>
+                )
+              }
+              iconPosition="left"
+            >
+              {isLoading ? '適用中...' : 'テンプレート適用'}
+            </Button>
+          </div>
         </div>
 
         {/* 選択したテンプレートの情報表示 */}
@@ -171,56 +194,6 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({ onApply, onT
             </div>
           </div>
         )}
-
-        {/* テンプレート適用ボタン */}
-        <div className="flex items-center gap-3">
-          <Button
-            variant="primary"
-            size="md"
-            onClick={handleApply}
-            disabled={!selectedTemplateId || isLoading}
-            icon={
-              isLoading ? (
-                <svg
-                  className="animate-spin"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-                  />
-                </svg>
-              )
-            }
-            iconPosition="left"
-            fullWidth
-          >
-            {isLoading ? '適用中...' : 'テンプレート適用'}
-          </Button>
-        </div>
 
         {/* メッセージ表示 */}
         {message && (
