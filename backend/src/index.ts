@@ -21,9 +21,19 @@ app.get('/health', (req: Request, res: Response) => {
 // API ルート
 import projectInfoRouter from './api/project-info';
 import fileUploadRouter from './api/file-upload';
+import estimateRouter from './api/estimate';
+import exportRouter from './api/export';
+import calculationRouter from './api/calculation';
+import tableDataRouter from './api/table-data';
+import costCalculationRouter from './api/cost-calculation';
 
 app.use('/api/project-info', projectInfoRouter);
 app.use('/api/file-upload', fileUploadRouter);
+app.use('/api/estimate', estimateRouter);
+app.use('/api/export', exportRouter);
+app.use('/api/calculation', calculationRouter);
+app.use('/api/table-data', tableDataRouter);
+app.use('/api/cost-calculation', costCalculationRouter);
 
 // 404 ハンドラー
 app.use((req: Request, res: Response) => {
